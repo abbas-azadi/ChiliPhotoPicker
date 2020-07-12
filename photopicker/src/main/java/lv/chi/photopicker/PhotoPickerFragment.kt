@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -43,6 +44,7 @@ import lv.chi.photopicker.ext.parentAs
 import lv.chi.photopicker.utils.CameraActivity
 import lv.chi.photopicker.utils.NonDismissibleBehavior
 import lv.chi.photopicker.utils.SpacingItemDecoration
+import java.io.File
 
 class PhotoPickerFragment : DialogFragment() {
 
@@ -102,9 +104,10 @@ class PhotoPickerFragment : DialogFragment() {
                     )
                 }
 
-                camera_container.isVisible = getAllowCamera(requireArguments())
+//                camera_container.isVisible = getAllowCamera(requireArguments())
                 gallery_container.setOnClickListener { pickImageGallery() }
                 camera_container.setOnClickListener { pickImageCamera() }
+                avatar_container.setOnClickListener { pickImageAvatar() }
                 findViewById<TextView>(R.id.grant).setOnClickListener { grantPermissions() }
 
                 pickerBottomSheetCallback.setMargin(requireContext().resources.getDimensionPixelSize(cornerRadiusOutValue.resourceId))
@@ -159,11 +162,16 @@ class PhotoPickerFragment : DialogFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            Request.ADD_PHOTO_GALLERY, Request.ADD_PHOTO_CAMERA -> {
+            Request.ADD_PHOTO_GALLERY, Request.ADD_PHOTO_CAMERA, Request.ADD_PHOTO_AVATAR -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    Intents.getUriResult(data)?.let {
-                        parentAs<Callback>()?.onImagesPicked(it)
+                    if (requestCode==Request.ADD_PHOTO_AVATAR){
+                        parentAs<Callback>()?.onAvatarPicked(data!!.getIntExtra("avatarId",0))
                         dismiss()
+                    }else {
+                        Intents.getUriResult(data)?.let {
+                            parentAs<Callback>()?.onImagesPicked(it)
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -293,7 +301,22 @@ class PhotoPickerFragment : DialogFragment() {
     }
 
     private fun pickImageCamera() {
-        startActivityForResult(CameraActivity.createIntent(requireContext()), Request.ADD_PHOTO_CAMERA)
+//        startActivityForResult(CameraActivity.createIntent(requireContext()), Request.ADD_PHOTO_CAMERA)
+
+
+//                                File file1 = getTempFile(ProfileActivity.this);
+//                                Uri selectedImage = Uri.fromFile(file1);
+//                                compressedImgBitmap = getImageResized(ProfileActivity.this, selectedImage);
+//                                int rotation = getRotation(ProfileActivity.this, selectedImage, true);
+//                                compressedImgBitmap = rotate(compressedImgBitmap, rotation);
+        val intent = Intent(
+                MediaStore.ACTION_IMAGE_CAPTURE)
+        val f = File(Environment.getExternalStorageDirectory(), "temp.jpg")
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f))
+
+        startActivityForResult(intent, Request.ADD_PHOTO_CAMERA)
+
+
     }
 
     private fun pickImageGallery() {
@@ -304,10 +327,20 @@ class PhotoPickerFragment : DialogFragment() {
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE, getAllowMultiple(requireArguments()))
         }
 
-        startActivityForResult(
-            Intent.createChooser(intent, getString(R.string.picker_select_photo)),
-            Request.ADD_PHOTO_GALLERY
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.picker_select_photo)), Request.ADD_PHOTO_GALLERY
         )
+
+//        val intent = Intent()
+////        intent.addCategory(Intent.CATEGORY_OPENABLE)
+//        intent.action = Intent.ACTION_VIEW
+//        intent.type = "image/*"
+//        intent.flags = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, getAllowMultiple(requireArguments()))
+//        startActivityForResult(Intent.createChooser(intent, getString(R.string.picker_select_photo)), Request.ADD_PHOTO_GALLERY)
+    }
+
+    private fun pickImageAvatar() {
+        startActivityForResult(Intent(context, AvatarActivity::class.java), Request.ADD_PHOTO_AVATAR)
     }
 
     private fun uploadSelected() {
@@ -323,10 +356,12 @@ class PhotoPickerFragment : DialogFragment() {
         const val MEDIA_ACCESS_PERMISSION = 1
         const val ADD_PHOTO_CAMERA = 2
         const val ADD_PHOTO_GALLERY = 3
+        const val ADD_PHOTO_AVATAR = 4
     }
 
     interface Callback {
         fun onImagesPicked(photos: ArrayList<Uri>)
+        fun onAvatarPicked(photoId:Int)
     }
 
     companion object {

@@ -15,4 +15,7 @@
     <color name="controls_dark">#85C4DD</color>
     <color name="text_primary_dark">#9A9A9A</color>
     <color name="text_secondary_dark">#E1E1E1</color>
+
+    <color name="my_transparent">#A0072087</color>
+
 </resources>

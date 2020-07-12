@@ -7,4 +7,9 @@
         <item name="android:includeFontPadding">true</item>
         <item name="android:textSize">@dimen/textSizeMedium</item>
     </style>
+
+    <style name="my_style" parent="Theme.AppCompat.Light.Dialog">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

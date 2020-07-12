@@ -27,11 +27,12 @@
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:background="?selectableItemBackground"
-                app:layout_constraintEnd_toStartOf="@id/camera_container"
-                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="gone"
+                app:layout_constraintRight_toLeftOf="@id/avatar_container"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
+                <lv.chi.photopicker.utils.customView.MyTextView
                     android:id="@+id/gallery"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -44,15 +45,39 @@
             </FrameLayout>
 
             <FrameLayout
+                android:id="@+id/avatar_container"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:paddingLeft="19dp"
+                android:paddingRight="19dp"
+                android:background="?selectableItemBackground"
+                app:layout_constraintLeft_toRightOf="@+id/gallery_container"
+                app:layout_constraintRight_toLeftOf="@+id/camera_container"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <lv.chi.photopicker.utils.customView.MyTextView
+                    android:id="@+id/avatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:drawableStart="?pickerAvatarIcon"
+                    android:drawablePadding="14dp"
+                    android:gravity="center"
+                    android:text="@string/picker_avatar"
+                    android:textAppearance="@style/TextAppearance.PhotoPicker.Button" />
+            </FrameLayout>
+
+            <FrameLayout
                 android:id="@+id/camera_container"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:background="?selectableItemBackground"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/gallery_container"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintLeft_toRightOf="@+id/avatar_container"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="gone">
 
-                <TextView
+                <lv.chi.photopicker.utils.customView.MyTextView
                     android:id="@+id/camera"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -71,9 +96,9 @@
                 android:background="?pickerDividerColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gallery_container" />
+                app:layout_constraintTop_toBottomOf="@+id/avatar_container" />
 
-            <TextView
+            <lv.chi.photopicker.utils.customView.MyTextView
                 android:id="@+id/empty_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
